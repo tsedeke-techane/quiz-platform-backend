@@ -1,6 +1,6 @@
 # Quiz Platform Backend
 
-Express.js backend for the Quiz Platform with TypeScript and Prisma ORM.
+Express.js backend for the Quiz Platform with TypeScript, PostgreSQL and Prisma ORM.
 
 ## Setup
 

@@ -9,13 +9,13 @@ export const getAllQuizzes = async (req: Request, res: Response) => {
       },
     })
 
-    const formattedQuizzes = quizzes.map((quiz) => ({
+    const formattedQuizzes = quizzes.map((quiz: any) => ({
       id: quiz.id,
       title: quiz.title,
       description: quiz.description,
       difficulty: quiz.difficulty,
       timeLimit: quiz.timeLimit,
-      questions: quiz.questions.map((q) => ({
+      questions: quiz.questions.map((q: any) => ({
         id: q.id,
         question: q.question,
         options: JSON.parse(q.options),
@@ -48,7 +48,7 @@ export const getQuizById = async (req: Request, res: Response) => {
       description: quiz.description,
       difficulty: quiz.difficulty,
       timeLimit: quiz.timeLimit,
-      questions: quiz.questions.map((q) => ({
+      questions: quiz.questions.map((q: any) => ({
         id: q.id,
         question: q.question,
         options: JSON.parse(q.options),
@@ -75,13 +75,13 @@ export const getQuizzesByDifficulty = async (req: Request, res: Response) => {
       },
     })
 
-    const formattedQuizzes = quizzes.map((quiz) => ({
+    const formattedQuizzes = quizzes.map((quiz: any) => ({
       id: quiz.id,
       title: quiz.title,
       description: quiz.description,
       difficulty: quiz.difficulty,
       timeLimit: quiz.timeLimit,
-      questions: quiz.questions.map((q) => ({
+      questions: quiz.questions.map((q: any) => ({
         id: q.id,
         question: q.question,
         options: JSON.parse(q.options),

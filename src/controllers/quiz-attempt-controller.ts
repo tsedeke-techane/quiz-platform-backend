@@ -125,7 +125,7 @@ export const submitAttempt = async (req: Request, res: Response) => {
     // Build questionAnswers and compute score
     let score = 0
     const qAnswersData = answers.map((ans) => {
-      const q = attempt.quiz.questions.find((qq) => qq.id === ans.questionId)
+      const q = attempt.quiz.questions.find((qq: any) => qq.id === ans.questionId)
       const options = q ? JSON.parse(q.options) : []
       const selected = options[ans.selectedAnswerIndex]
       const isCorrect = q ? selected === q.correctAnswer : false
@@ -161,13 +161,13 @@ export const getUserQuizAttempts = async (req: Request, res: Response) => {
   try {
     const { userId } = req as AuthRequest
     // Only include attempts that have answers submitted (i.e., at least one QuestionAnswer)
-    const attempts: Prisma.QuizAttemptGetPayload<{ include: { quiz: true } }>[] = await prisma.quizAttempt.findMany({
+    const attempts = await prisma.quizAttempt.findMany({
       where: { userId, questionAnswers: { some: {} } },
       include: { quiz: true },
       orderBy: { createdAt: "desc" },
     })
 
-    const formattedAttempts = attempts.map((attempt) => ({
+    const formattedAttempts = attempts.map((attempt: any) => ({
       id: attempt.id,
       quizTitle: attempt.quiz.title,
       quizId: attempt.quizId,
@@ -215,7 +215,7 @@ export const getQuizAttemptById = async (req: Request, res: Response) => {
       percentage: Math.round((attempt.score / attempt.totalQuestions) * 100),
       timeSpent: attempt.timeSpent,
       answers: JSON.parse(attempt.answers),
-      questionAnswers: attempt.questionAnswers.map((qa) => ({
+      questionAnswers: attempt.questionAnswers.map((qa: any) => ({
         questionId: qa.questionId,
         questionText: qa.question.question,
         selectedAnswer: qa.selectedAnswer,
@@ -239,9 +239,9 @@ export const getQuizAttemptStats = async (req: Request, res: Response) => {
 
     const totalAttempts = attempts.length
     const averageScore =
-      attempts.length > 0 ? Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / attempts.length) : 0
-    const totalTimeSpent = attempts.reduce((sum, a) => sum + a.timeSpent, 0)
-    const bestScore = attempts.length > 0 ? Math.max(...attempts.map((a) => a.score)) : 0
+      attempts.length > 0 ? Math.round(attempts.reduce((sum: number, a: any) => sum + a.score, 0) / attempts.length) : 0
+    const totalTimeSpent = attempts.reduce((sum: number, a: any) => sum + a.timeSpent, 0)
+    const bestScore = attempts.length > 0 ? Math.max(...attempts.map((a: any) => a.score)) : 0
 
     res.json({
       totalAttempts,
