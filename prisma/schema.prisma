@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  quizAttempts QuizAttempt[]
+}
+
+model Quiz {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  difficulty  String?
+  timeLimit   Int
+  createdAt   DateTime      @default(now())
+  questions   Question[]
+  attempts    QuizAttempt[] @relation("QuizAttempts")
+}
+
+model Question {
+  id              String           @id @default(cuid())
+  quizId          String
+  question        String
+  options         String
+  correctAnswer   String
+  createdAt       DateTime         @default(now())
+  quiz            Quiz             @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  questionAnswers QuestionAnswer[]
+
+  @@index([quizId])
+}
+
+model QuizAttempt {
+  id              String           @id @default(cuid())
+  userId          String
+  quizId          String
+  score           Int
+  totalQuestions  Int
+  timeSpent       Int
+  answers         String
+  createdAt       DateTime         @default(now())
+  questionAnswers QuestionAnswer[]
+  quiz            Quiz             @relation("QuizAttempts", fields: [quizId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([quizId])
+}
+
+model QuestionAnswer {
+  id                  String      @id @default(cuid())
+  attemptId           String
+  questionId          String
+  selectedAnswerIndex Int
+  selectedAnswer      String
+  correctAnswer       String
+  isCorrect           Boolean
+  createdAt           DateTime    @default(now())
+  attempt             QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question            Question    @relation(fields: [questionId], references: [id])
+
+  @@index([attemptId])
+  @@index([questionId])
+}
